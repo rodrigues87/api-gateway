@@ -1,0 +1,29 @@
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      # aqui criamos uma rota para definir uma mudan�a de direcionamento caso haja qualquer requisi��o a partir de events-authuser/
+      # Esta rota tamb�m precisa ser criada no service de authuser
+      routes:
+        - id: authuser-service
+          uri: lb://events-authuser-service
+          predicates:
+            - Path=/events-authuser/**
+
+        - id: stablishment-service
+          uri: lb://events-stablishment-service
+          predicates:
+            - Path=/events-stablishment/**
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: 'http://localhost:8761/eureka'
+  instance:
+    hostname: localhost
+
